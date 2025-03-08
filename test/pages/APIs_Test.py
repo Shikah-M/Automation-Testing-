@@ -14,7 +14,7 @@ class APIs:
  def __init__(self,driver):
         self.driver = driver 
      
- 
+ #hi git and hithub
  def Validate_response_content_Allget(self):
     print("welcom to validate APIs")
     response = requests.get(f"{Globals.Test.URL}/posts")   
@@ -22,6 +22,7 @@ class APIs:
     response=response.text
     ExcelresponseCode=DataManager.getDictionaryTableFromExcell("select [State code] from [Response$] WHERE [RowID] = 1")[0]['State code']
     ExcelresponseCode=int(ExcelresponseCode)
+
     if  response_code==ExcelresponseCode:
             Reporter.passed("Validate State code for get all ID passed")
             Reporter.info(f"The result from get All ID: {response}")
@@ -111,20 +112,7 @@ class APIs:
          Reporter.info(f"TThe result from post ID=1:{response.json()}")
          Reporter.info(f"The status code: {response.status_code}") 
 
- 
- 
-
-    """if (response['userId'] == Fetch_Data_From_Excel['userId'] and
-                response['title'] == Fetch_Data_From_Excel['title'] and
-                response['body'] == Fetch_Data_From_Excel['body']):
-            Reporter.passed("Validate the Response of post new ID Passed")
-            Reporter.info(f"The result from post ID=1:{response.json()}")  
-            Reporter.info(f"The status code: {response.status_code}")
-       else:
-         Reporter.failed("Validate the  Response of post new ID Failed")  
-         Reporter.info(f"TThe result from post ID=1:{response.json()}")
-         Reporter.info(f"The status code: {response.status_code}") 
- 
+    """
      if response.status_code==Fetch_respnse_status_code and Fetch_Data_From_Excel== response.json():
           Reporter.passed("Validate the Response of post new ID Passed")
           Reporter.info(f"The result from post ID=1:{response.json()}")  
@@ -141,6 +129,8 @@ class APIs:
     r = requests.delete(URL2) 
     Fetch_StatusCode_excel=DataManager.getDictionaryTableFromExcell("select [State code] from [Response$] where [RowID] = 3")[0]['State code']
     Fetch_StatusCode_excel=int( Fetch_StatusCode_excel)
+
+    
     if(r.status_code== Fetch_StatusCode_excel):
           Reporter.passed("Validate the Response of delete ID Passed")
           Reporter.info(f"The result from Delete ID=1: {r.json()}")

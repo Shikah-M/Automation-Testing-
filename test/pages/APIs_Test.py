@@ -19,16 +19,17 @@ class APIs:
     print("welcom to validate APIs")
     response = requests.get(f"{Globals.Test.URL}/posts")   
     response_code =response.status_code
-    response=response.text
+    response=response.text#.json()
     ExcelresponseCode=DataManager.getDictionaryTableFromExcell("select [State code] from [Response$] WHERE [RowID] = 1")[0]['State code']
     ExcelresponseCode=int(ExcelresponseCode)
 
-    if  response_code==ExcelresponseCode:
-            Reporter.passed("Validate State code for get all ID passed")
-            Reporter.info(f"The result from get All ID: {response}")
-            Reporter.info(f"The status code:{response_code}")   
+    try:
+          assert response_code==ExcelresponseCode,f"expected status code:{ExcelresponseCode},got:{response_code}"
+          Reporter.passed("Validate State code for get all ID passed")
+          Reporter.info(f"The result from get All ID: {response}")
+          Reporter.info(f"The status code:{response_code}")   
 
-    else:
+    except:
             Reporter.failed("Validate State code for get all ID Failed")
             Reporter.info(f"The result from get All ID: {response.json()}")
             Reporter.info(f"The status code:{response_code}")  
@@ -56,24 +57,20 @@ class APIs:
     print(APIsresponseText)
     APIsresponseCode=responseID1.status_code
     print(APIsresponseCode)
-
-    assert ExcelresponseText == APIsresponseText, f"Expected response text: {ExcelresponseText},  got: {APIsresponseText}"
-    assert ExcelresponseCode == APIsresponseCode, f"Expected status code: {ExcelresponseCode},  got: {APIsresponseCode}"
-    Reporter.passed("Validate Response Get specific ID Passed")
-    Reporter.info(f"The result from get ID=1: {APIsresponseText}")  
-    Reporter.info(f"The status code: {APIsresponseCode}") 
-    
-
-    """  if ( ExcelresponseText == APIsresponseText and ExcelresponseCode == APIsresponseCode ):
-          Reporter.passed("Validate Response Get spisfic ID Pass")
-          Reporter.info(f"The result from get ID=1: {APIsresponseText}")
-          Reporter.info(f"The status code:{APIsresponseCode}")   
-    else:
-       Reporter.failed("Validate Response Get spisfic ID Faild")  
-       Reporter.info(f"The result from get ID=1: {APIsresponseText}")
-       Reporter.info(f"The status code:{APIsresponseCode}")     """
-
-
+    try: 
+     assert ExcelresponseCode == APIsresponseCode, f"Expected status code: {ExcelresponseCode},  got: {APIsresponseCode}"
+     assert ExcelresponseText['userId']== APIsresponseText['userId'],f"Expected userid: {ExcelresponseText['userId']},got:{APIsresponseText['userId']}"
+     assert ExcelresponseText['id'] ==APIsresponseText['id'],f"Expected id:{ExcelresponseText['id']}, got:{APIsresponseText['id']}"
+     assert ExcelresponseText['title'] ==APIsresponseText['title'],f"Expected title:{ExcelresponseText['title']}, got:{APIsresponseText['title']}"
+     assert ExcelresponseText['body'] ==APIsresponseText['body'],f"Expected body:{ExcelresponseText['body']}, got:{APIsresponseText['body']}"
+     Reporter.passed("Validate Response Get specific ID Passed")
+     Reporter.info(f"The result from get ID=1: {APIsresponseText}")  
+     Reporter.info(f"The status code: {APIsresponseCode}") 
+    except AssertionError as e:
+        Reporter.failed("Validate Response Get spisfic ID Faild")  
+        Reporter.info(f"The result from get ID=1: {APIsresponseText}")
+        Reporter.info(f"The status code:{APIsresponseCode}")
+        
 
  def Validate_Using_Post(self):
     URL1= f"{Globals.Test.URL}/posts"
@@ -94,7 +91,7 @@ class APIs:
     print (Fetch_respnse_status_code)
 
     Fetch_respnse_status_code = int(Fetch_respnse_status_code)
-     
+    
  #try assertion it 
     try:
        assert response.status_code==Fetch_respnse_status_code,f"Expected status code: {Fetch_respnse_status_code},  got: {response.status_code}"
@@ -112,16 +109,6 @@ class APIs:
          Reporter.info(f"TThe result from post ID=1:{response.json()}")
          Reporter.info(f"The status code: {response.status_code}") 
 
-    """
-     if response.status_code==Fetch_respnse_status_code and Fetch_Data_From_Excel== response.json():
-          Reporter.passed("Validate the Response of post new ID Passed")
-          Reporter.info(f"The result from post ID=1:{response.json()}")  
-          Reporter.info(f"The status code: {response.status_code}")
-    else:
-         Reporter.failed("Validate the  Response of post new ID Failed")  
-         Reporter.info(f"TThe result from post ID=1:{response.json()}")
-         Reporter.info(f"The status code: {response.status_code}")  """
-
 
  def validate_Using_Delete(self):
     URL2=f"{Globals.Test.URL}/posts/1"
@@ -130,13 +117,12 @@ class APIs:
     Fetch_StatusCode_excel=DataManager.getDictionaryTableFromExcell("select [State code] from [Response$] where [RowID] = 3")[0]['State code']
     Fetch_StatusCode_excel=int( Fetch_StatusCode_excel)
 
-    
-    if(r.status_code== Fetch_StatusCode_excel):
-          Reporter.passed("Validate the Response of delete ID Passed")
-          Reporter.info(f"The result from Delete ID=1: {r.json()}")
-          Reporter.info(f"The status code: {r.status_code}")
-         
-    else:
+    try:
+        assert r.status_code==Fetch_StatusCode_excel,f"Expected status code: {Fetch_StatusCode_excel}, got{r.status_code}"
+        Reporter.passed("Validate the Response of delete ID Passed")
+        Reporter.info(f"The result from Delete ID=1: {r.json()}")
+        Reporter.info(f"The status code: {r.status_code}")  
+    except:
          Reporter.failed("Validate the  Response of delete  ID Failed")  
          Reporter.info(f"The result from Delete ID=1: {r.json()}")
          Reporter.info(f"The status code: {r.status_code}")
